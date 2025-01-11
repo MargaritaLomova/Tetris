@@ -93,6 +93,7 @@ public class FigureController : MonoBehaviour
     private void Lock()
     {
         board.Set(this);
+        board.ClearLines();
         board.SpawnRandomFigure();
     }
 

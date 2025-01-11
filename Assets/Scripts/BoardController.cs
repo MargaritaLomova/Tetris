@@ -66,6 +66,23 @@ public class BoardController : MonoBehaviour
         }
     }
 
+    public void ClearLines()
+    {
+        int row = Bounds.yMin;
+
+        while (row < Bounds.yMax)
+        {
+            if (IsLineFull(row))
+            {
+                LineClear(row);
+            }
+            else
+            {
+                row++;
+            }
+        }
+    }
+
     public bool IsValidPosition(FigureController figure, Vector3Int position)
     {
         RectInt bounds = Bounds;
@@ -74,6 +91,42 @@ public class BoardController : MonoBehaviour
         {
             Vector3Int tilePosition = figure.Cells[i] + position;
             if (!bounds.Contains((Vector2Int)tilePosition) || tilemap.HasTile(tilePosition))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void LineClear(int row)
+    {
+        for (int col = Bounds.xMin; col < Bounds.xMax; col++)
+        {
+            Vector3Int position = new Vector3Int(col, row, 0);
+            tilemap.SetTile(position, null);
+        }
+
+        while (row < Bounds.yMax)
+        {
+            for (int col = Bounds.xMin; col < Bounds.xMax; col++)
+            {
+                Vector3Int position = new Vector3Int(col, row + 1, 0);
+                TileBase above = tilemap.GetTile(position);
+                position = new Vector3Int(col, row, 0);
+                tilemap.SetTile(position, above);
+            }
+
+            row++;
+        }
+    }
+
+    private bool IsLineFull(int row)
+    {
+        for (int col = Bounds.xMin; col < Bounds.xMax; col++)
+        {
+            Vector3Int position = new Vector3Int(col, row, 0);
+            if (tilemap.HasTile(position))
             {
                 return false;
             }
