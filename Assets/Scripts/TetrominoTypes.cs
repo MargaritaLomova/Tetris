@@ -18,9 +18,11 @@ public struct TetrominoData
     public TetrominoTypes Type;
     public Tile Tile;
     public Vector2Int[] Cells { get; private set; }
+    public Vector2Int[,] WallKicks { get; private set; }
 
     public void Init()
     {
         Cells = Data.Cells[Type];
+        WallKicks = Data.WallKicks[Type];
     }
 }
