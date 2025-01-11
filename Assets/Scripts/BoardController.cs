@@ -139,7 +139,7 @@ public class BoardController : MonoBehaviour
         for (int col = Bounds.xMin; col < Bounds.xMax; col++)
         {
             Vector3Int position = new Vector3Int(col, row, 0);
-            if (tilemap.HasTile(position))
+            if (!tilemap.HasTile(position))
             {
                 return false;
             }
