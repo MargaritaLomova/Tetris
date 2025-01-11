@@ -8,25 +8,25 @@ public class BoardController : MonoBehaviour
     [SerializeField]
     private TetrominoData[] tetrominoes;
 
+    public Vector2Int BoardSize { get; private set; }
     public RectInt Bounds
     {
         get
         {
-            Vector2Int position = new Vector2Int(-boardSize.x / 2, -boardSize.y / 2);
-            return new RectInt(position, boardSize);
+            Vector2Int position = new Vector2Int(-BoardSize.x / 2, -BoardSize.y / 2);
+            return new RectInt(position, BoardSize);
         }
     }
 
     private Tilemap tilemap;
     private FigureController activeFigure;
-    private Vector2Int boardSize;
 
     private void Awake()
     {
         tilemap = GetComponentInChildren<Tilemap>();
         activeFigure = GetComponent<FigureController>();
         var boardSizeFromSpriteRenderer = GetComponent<SpriteRenderer>().size;
-        boardSize = new Vector2Int((int)boardSizeFromSpriteRenderer.x, (int)boardSizeFromSpriteRenderer.y);
+        BoardSize = new Vector2Int((int)boardSizeFromSpriteRenderer.x, (int)boardSizeFromSpriteRenderer.y);
 
         for (int i = 0; i < tetrominoes.Length; i++)
         {
@@ -45,7 +45,15 @@ public class BoardController : MonoBehaviour
         TetrominoData randomTetrominoData = tetrominoes[randomTetrominoIndex];
 
         activeFigure.Init(spawnPosition, randomTetrominoData);
-        Set(activeFigure);
+
+        if(IsValidPosition(activeFigure, spawnPosition))
+        {
+            Set(activeFigure);
+        }
+        else
+        {
+            GameOver();
+        }
     }
 
     public void Set(FigureController figure)
@@ -97,6 +105,11 @@ public class BoardController : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void GameOver()
+    {
+        tilemap.ClearAllTiles();
     }
 
     private void LineClear(int row)
