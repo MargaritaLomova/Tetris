@@ -20,11 +20,13 @@ public class BoardController : MonoBehaviour
 
     private Tilemap tilemap;
     private FigureController activeFigure;
+    private ScoreController scoreController;
 
     private void Awake()
     {
         tilemap = GetComponentInChildren<Tilemap>();
         activeFigure = GetComponent<FigureController>();
+        scoreController = FindObjectOfType<ScoreController>();
         var boardSizeFromSpriteRenderer = GetComponent<SpriteRenderer>().size;
         BoardSize = new Vector2Int((int)boardSizeFromSpriteRenderer.x, (int)boardSizeFromSpriteRenderer.y);
 
@@ -110,6 +112,7 @@ public class BoardController : MonoBehaviour
     private void GameOver()
     {
         tilemap.ClearAllTiles();
+        scoreController.ResetCurrentScore();
     }
 
     private void LineClear(int row)
@@ -118,6 +121,8 @@ public class BoardController : MonoBehaviour
         {
             Vector3Int position = new Vector3Int(col, row, 0);
             tilemap.SetTile(position, null);
+
+            scoreController.AddPoints(1);
         }
 
         while (row < Bounds.yMax)
